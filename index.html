@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0d1210">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Nigromancia">
+  <title>Graduate in Necromancy</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" href="assets/icon-192.png">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <main id="app">
+
+    <!-- Pantalla 1: Presentación -->
+    <section class="screen home" id="screen-home" data-active>
+      <div class="home-hero">
+        <img class="home-card" src="assets/cards/back.webp" alt="">
+        <h1 class="title"><img src="assets/logo.webp" alt="Graduate in Necromancy"></h1>
+        <p class="tagline">Un juego de cartas solitario.<br>Sobreviví dos semestres en la facultad de nigromancia: terminá la tesis, juntá créditos y no pierdas la cordura.</p>
+      </div>
+
+      <footer class="bottom stack">
+        <button id="continue-btn" class="btn btn-secondary" hidden>Continuar partida</button>
+        <button id="play-btn" class="btn btn-primary">Jugar</button>
+        <button id="rules-btn" class="btn btn-ghost">📜 Cómo se juega</button>
+        <p class="links"><button type="button" id="open-install" class="link-btn">📲 Cómo instalar la app</button></p>
+        <p class="credit">Juego original de Bulgur007 · <a href="https://bulgur007.itch.io/graduate-in-necromancy" target="_blank" rel="noopener">bulgur007.itch.io</a></p>
+      </footer>
+    </section>
+
+    <!-- Pantalla 2: Nueva partida -->
+    <section class="screen" id="screen-setup">
+      <header class="top">
+        <button class="back" id="back-home" aria-label="Volver">‹</button>
+        <h1>Nueva partida</h1>
+        <p class="sub">¿Cuántos créditos necesitás para recibirte?</p>
+      </header>
+
+      <label class="switch">
+        <input type="checkbox" id="expansion">
+        <span class="switch-text">
+          <strong>Usar la expansión</strong>
+          <small>Suma 3 cursos W y un Cansancio. Los semestres pasan a tener 14 cartas.</small>
+        </span>
+        <span class="switch-ui" aria-hidden="true"></span>
+      </label>
+
+      <div id="difficulty-list" class="level-list"></div>
+    </section>
+
+    <!-- Pantalla 3: Partida -->
+    <section class="screen game" id="screen-game">
+      <header class="top">
+        <button class="back" id="quit-game" aria-label="Salir de la partida">×</button>
+        <h1 id="semester-title" class="game-title"></h1>
+        <p id="semester-sub" class="sub"></p>
+        <button class="help" id="game-rules" aria-label="Reglas">?</button>
+      </header>
+
+      <div class="stats">
+        <div class="stat" id="stat-sanity"><span class="stat-label">🌀 Cordura</span><b class="stat-val"></b><span class="bar"><i></i></span></div>
+        <div class="stat" id="stat-thesis"><span class="stat-label">✒️ Tesis</span><b class="stat-val"></b><span class="bar"><i></i></span></div>
+        <div class="stat" id="stat-credits"><span class="stat-label">🎓 Créditos</span><b class="stat-val"></b><span class="bar"><i></i></span></div>
+      </div>
+      <div class="magic-row">
+        <span id="magic" class="magic" aria-label="Magia aprendida"></span>
+        <span id="piles" class="piles"></span>
+      </div>
+
+      <div class="stage">
+        <button type="button" class="big-card" id="big-card" aria-label="Ver la carta en grande"><img alt=""></button>
+        <p class="card-name" id="card-name"></p>
+        <p class="card-info" id="card-info"></p>
+      </div>
+
+      <p class="toast" id="toast" role="status" aria-live="polite"></p>
+
+      <div class="actions" id="actions"></div>
+
+      <section class="my-courses" id="my-courses"></section>
+    </section>
+
+  </main>
+
+  <!-- Carta en grande -->
+  <dialog id="zoom-dialog" class="sheet zoom" aria-labelledby="zoom-title">
+    <h2 id="zoom-title"></h2>
+    <div class="sheet-body">
+      <img id="zoom-img" class="zoom-img" alt="">
+      <ul id="zoom-info" class="zoom-info"></ul>
+    </div>
+    <button type="button" id="zoom-ok" class="btn btn-primary">Cerrar</button>
+  </dialog>
+
+  <!-- Fin de la partida -->
+  <dialog id="end-dialog" class="sheet end" aria-labelledby="end-title">
+    <p class="end-emoji" id="end-emoji"></p>
+    <h2 id="end-title"></h2>
+    <ul id="end-msg" class="end-msg"></ul>
+    <p id="end-stats" class="end-stats"></p>
+    <button type="button" id="end-again" class="btn btn-primary">Jugar de nuevo</button>
+    <button type="button" id="end-home" class="btn btn-ghost">Volver al inicio</button>
+  </dialog>
+
+  <!-- Confirmar salida -->
+  <dialog id="quit-dialog" class="sheet" aria-labelledby="quit-title">
+    <h2 id="quit-title">¿Salir de la partida?</h2>
+    <p class="end-msg">Vas a poder continuarla desde la pantalla de inicio.</p>
+    <button type="button" id="quit-yes" class="btn btn-primary">Salir</button>
+    <button type="button" id="quit-no" class="btn btn-ghost">Seguir jugando</button>
+  </dialog>
+
+  <!-- Reglas -->
+  <dialog id="rules-dialog" class="sheet" aria-labelledby="rules-title">
+    <h2 id="rules-title">Cómo se juega</h2>
+    <div class="sheet-body">
+      <h3>Objetivo</h3>
+      <p>Sos estudiante de nigromancia. Cuando se terminen las cartas de los dos semestres, te recibís si:</p>
+      <ol>
+        <li>Terminaste la <b>tesis</b> (5 de 5).</li>
+        <li>Juntaste los <b>créditos</b> que pide la dificultad elegida.</li>
+        <li>Tu <b>cordura</b> no es negativa (0 o más).</li>
+      </ol>
+      <h3>Preparación</h3>
+      <p>Se mezclan las cartas: 12 forman el <b>1° semestre</b> (14 con la expansión) y el resto, el mazo del <b>2° semestre</b>. Empezás con 3 de cordura.</p>
+      <h3>Cada turno</h3>
+      <p>Se da vuelta una carta y elegís qué hacer con ella:</p>
+      <ul>
+        <li><b>Inscribirte al curso</b>: pagás la cordura del recuadro de arriba (y la tesis, en los cursos W), sumás los créditos de abajo y aprendés la magia que enseña el curso. La cordura puede bajar hasta −2.</li>
+        <li><b>Dejarlo para el 2° semestre</b>: solo durante el 1° semestre. La carta va al mazo del 2° semestre, que admite hasta 12 cartas (14 con la expansión).</li>
+        <li><b>Compañero de estudio</b>: ponés la carta debajo de un curso del semestre actual que tenga lugar libre y ganás su efecto: el 1° compañero da lo que muestra la carta sola; el 2°, lo de las dos cartas.</li>
+        <li><b>Trabajar en la tesis</b>: +1 de tesis.</li>
+        <li><b>Recuperar cordura</b>: solo con las cartas de cordura (la espiral). +1, hasta 5.</li>
+        <li><b>Descartar</b> la carta.</li>
+      </ul>
+      <h3>Requisitos de los cursos</h3>
+      <ul>
+        <li><b>Magia</b>: algunos cursos piden haber aprendido magia <b>▼ oscura</b> o <b>○ luz</b>. Cada magia aprendida cubre un solo requisito. Los cursos con ▼○ abajo enseñan una magia que sirve como cualquiera de las dos.</li>
+        <li><b>A1 / A2</b>: <i>Soul mending</i> pide haber cursado A1 (<i>Speaking with the dead</i>) e <i>Invoking shadowspawns</i> pide A2 (<i>History of the Void</i>).</li>
+      </ul>
+      <h3>Cansancio</h3>
+      <p>Las cartas de <b>Cansancio</b> no sirven para la tesis ni como compañero de estudio: solo se descartan. En la expansión, los cursos <b>W</b> aceptan únicamente Cansancio como compañero.</p>
+      <h3>Entre semestres</h3>
+      <p>Al terminar el 1° semestre recuperás 3 de cordura (hasta 5) y se mezcla el mazo del 2°. Los compañeros de estudio solo se pueden poner en cursos del semestre en curso.</p>
+      <h3>Símbolos de las cartas</h3>
+      <p>🌀 espiral: cordura · ✒️ pluma: tesis · C: créditos · ▼ magia oscura · ○ magia de luz.</p>
+      <h3>Dificultad</h3>
+      <p>Créditos para recibirte: fácil 35, normal 40, difícil 45. Con la expansión: 45, 50 y 52.</p>
+      <p>Tocá la carta para verla en grande con todos sus datos. Reglas originales en <a href="https://bulgur007.itch.io/graduate-in-necromancy" target="_blank" rel="noopener">bulgur007.itch.io</a>.</p>
+    </div>
+    <button type="button" id="rules-ok" class="btn btn-primary">Entendido</button>
+  </dialog>
+
+  <!-- Cómo instalar -->
+  <dialog id="install-dialog" class="sheet" aria-labelledby="install-title">
+    <h2 id="install-title">Instalar la app</h2>
+    <p id="install-done" class="install-note" hidden>✅ Ya estás usando la app instalada.</p>
+    <div class="install-tabs" role="tablist">
+      <button type="button" role="tab" class="install-tab" data-os="android" aria-selected="true">Android</button>
+      <button type="button" role="tab" class="install-tab" data-os="ios" aria-selected="false">iPhone</button>
+    </div>
+    <div class="sheet-body">
+      <div class="install-panel" data-os="android" role="tabpanel">
+        <ol>
+          <li>Abrí esta página en <b>Chrome</b> (o en el navegador que uses: Samsung Internet, Edge, Firefox…).</li>
+          <li>Tocá el menú del navegador: <b>⋮</b> (tres puntos) o <b>≡</b> (tres rayas), arriba o abajo a la derecha.</li>
+          <li>Elegí <b>Instalar app</b>. Si no aparece, buscá <b>Agregar a pantalla principal</b> o <b>Agregar página a → Pantalla de inicio</b>.</li>
+          <li>Confirmá con <b>Instalar</b> o <b>Agregar</b>.</li>
+        </ol>
+        <p class="install-note">El ícono de la calavera con birrete queda en la pantalla de inicio, como cualquier app.</p>
+      </div>
+      <div class="install-panel" data-os="ios" role="tabpanel" hidden>
+        <ol>
+          <li>Abrí esta página en <b>Safari</b> (es lo más seguro; en otros navegadores no siempre aparece la opción).</li>
+          <li>Tocá el botón <b>Compartir</b>: el cuadrado con una flecha hacia arriba ⬆️. Según la versión está en la barra de abajo, arriba, o dentro del menú <b>⋯</b>.</li>
+          <li>Deslizá hacia abajo y elegí <b>Agregar a inicio</b> (o <b>Agregar a pantalla de inicio</b>).</li>
+          <li>Tocá <b>Agregar</b>, arriba a la derecha.</li>
+        </ol>
+        <p class="install-note">El ícono queda en la pantalla de inicio. Funciona igual en iPad.</p>
+      </div>
+      <p class="install-note">Una vez abierta con internet, la app funciona sin conexión.</p>
+    </div>
+    <button type="button" id="install-ok" class="btn btn-primary">Entendido</button>
+  </dialog>
+
+  <script src="cards.js"></script>
+  <script src="game.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
