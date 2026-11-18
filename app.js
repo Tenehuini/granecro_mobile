@@ -42,34 +42,34 @@ const el = (tag, cls, text) => {
 
 // ================= Textos de las cartas =================
 function cardSummary(c) {
-  if (c.type === 'tired') return 'Solo se descarta (o es compañero en un curso W).';
-  if (c.type === 'sanity') return '+1 cordura, o tesis, o compañero de estudio.';
-  const parts = [`Nivel ${c.level}`, `−${c.sanity} cordura`];
-  if (c.thesis) parts.push(`−${c.thesis} tesis`);
-  parts.push(`+${c.credits} créditos`);
-  if (c.needMagic.length) parts.push('pide ' + c.needMagic.map((m) => MAGIC_ICON[m]).join(''));
-  if (c.needLevel) parts.push('pide ' + c.needLevel);
-  if (c.learns) parts.push('enseña ' + MAGIC_ICON[c.learns]);
+  if (c.type === 'tired') return 'Can only be discarded (or be a study buddy for a W course).';
+  if (c.type === 'sanity') return '+1 sanity, or thesis, or study buddy.';
+  const parts = [`Level ${c.level}`, `−${c.sanity} sanity`];
+  if (c.thesis) parts.push(`−${c.thesis} thesis`);
+  parts.push(`+${c.credits} credits`);
+  if (c.needMagic.length) parts.push('requires ' + c.needMagic.map((m) => MAGIC_ICON[m]).join(''));
+  if (c.needLevel) parts.push('requires ' + c.needLevel);
+  if (c.learns) parts.push('teaches ' + MAGIC_ICON[c.learns]);
   return parts.join(' · ');
 }
 
 function cardFacts(c) {
   if (c.type === 'tired') {
-    return ['No sirve para la tesis ni como compañero de estudio: solo se descarta.',
-      'Con la expansión, es el único compañero que aceptan los cursos W.'];
+    return ["It can't be used to work on your thesis or as a study buddy: just discard it.",
+      'With the expansion, it is the only study buddy that W courses accept.'];
   }
   if (c.type === 'sanity') {
-    return ['Recupera 1 de cordura (hasta 5).', 'También sirve para trabajar en la tesis o como compañero de estudio.'];
+    return ['Recovers 1 sanity point (up to 5).', 'It can also be used to work on your thesis or as a study buddy.'];
   }
-  const out = [`Curso de nivel ${c.level}.`];
-  out.push(`Inscribirte cuesta ${c.sanity} de cordura${c.thesis ? ` y ${c.thesis} de tesis` : ''}.`);
-  out.push(`Da ${c.credits} créditos.`);
-  if (c.needMagic.length) out.push(`Pide magia: ${c.needMagic.map((m) => `${MAGIC_ICON[m]} ${MAGIC_WORD[m]}`).join(', ')}.`);
-  if (c.needLevel) out.push(`Pide haber cursado ${c.needLevel} (${LEVEL_COURSE[c.needLevel]}).`);
-  out.push(c.learns ? `Enseña magia ${MAGIC_ICON[c.learns]} ${MAGIC_WORD[c.learns]}.` : 'No enseña magia.');
-  if (!c.buddy.length) out.push('No tiene lugar para compañeros de estudio.');
-  c.buddy.forEach((b, i) => out.push(`${i + 1}° compañero de estudio: ${describeEffect(b)}.`));
-  if (c.level === 'W') out.push('Solo acepta Cansancio como compañero de estudio.');
+  const out = [`Level ${c.level} course.`];
+  out.push(`Enrolling costs ${c.sanity} sanity${c.thesis ? ` and ${c.thesis} thesis` : ''}.`);
+  out.push(`Gives ${c.credits} credits.`);
+  if (c.needMagic.length) out.push(`Requires magic: ${c.needMagic.map((m) => `${MAGIC_ICON[m]} ${MAGIC_WORD[m]}`).join(', ')}.`);
+  if (c.needLevel) out.push(`Requires having taken ${c.needLevel} (${LEVEL_COURSE[c.needLevel]}).`);
+  out.push(c.learns ? `Teaches ${MAGIC_ICON[c.learns]} ${MAGIC_WORD[c.learns]} magic.` : 'Teaches no magic.');
+  if (!c.buddy.length) out.push('No room for study buddies.');
+  c.buddy.forEach((b, i) => out.push(`${ORDINAL[i]} study buddy: ${describeEffect(b)}.`));
+  if (c.level === 'W') out.push('Only accepts Tired cards as study buddies.');
   return out;
 }
 
@@ -88,7 +88,7 @@ function renderStat(id, value, max, label, ratio, state) {
   box.querySelector('.bar i').style.width = `${Math.max(0, Math.min(1, ratio)) * 100}%`;
   box.classList.toggle('is-ok', state === 'ok');
   box.classList.toggle('is-bad', state === 'bad');
-  box.setAttribute('aria-label', `${label}: ${value} de ${max}`);
+  box.setAttribute('aria-label', `${label}: ${value} of ${max}`);
 }
 
 function bumpChanged() {
@@ -108,24 +108,24 @@ function bumpChanged() {
 
 function renderStats() {
   const g = game;
-  renderStat('#stat-sanity', g.sanity, MAX_SANITY, 'Cordura', (g.sanity - MIN_SANITY) / (MAX_SANITY - MIN_SANITY), g.sanity < 0 ? 'bad' : '');
-  renderStat('#stat-thesis', g.thesis, MAX_THESIS, 'Tesis', g.thesis / MAX_THESIS, g.thesis >= MAX_THESIS ? 'ok' : '');
-  renderStat('#stat-credits', g.credits, g.target, 'Créditos', g.credits / g.target, g.credits >= g.target ? 'ok' : '');
+  renderStat('#stat-sanity', g.sanity, MAX_SANITY, 'Sanity', (g.sanity - MIN_SANITY) / (MAX_SANITY - MIN_SANITY), g.sanity < 0 ? 'bad' : '');
+  renderStat('#stat-thesis', g.thesis, MAX_THESIS, 'Thesis', g.thesis / MAX_THESIS, g.thesis >= MAX_THESIS ? 'ok' : '');
+  renderStat('#stat-credits', g.credits, g.target, 'Credits', g.credits / g.target, g.credits >= g.target ? 'ok' : '');
   bumpChanged();
 
   const magic = $('#magic');
   magic.replaceChildren(...(g.magic.length
     ? g.magic.map((m) => el('span', 'chip', `${MAGIC_ICON[m]} ${MAGIC_WORD[m]}`))
-    : [el('span', '', 'Sin magia aprendida')]));
-  $('#piles').textContent = g.semester === 1 ? `Mazo 2° sem.: ${g.s2.length}/${semesterSize(g)}` : '';
+    : [el('span', '', 'No magic learned')]));
+  $('#piles').textContent = g.semester === 1 ? `Semester 2 deck: ${g.s2.length}/${semesterSize(g)}` : '';
 }
 
 function renderHeader() {
   const g = game;
-  $('#semester-title').textContent = `${g.semester}° semestre`;
+  $('#semester-title').textContent = `Semester ${g.semester}`;
   const left = g.semester === 1 ? g.s1.length : g.s2.length;
-  $('#semester-sub').textContent = g.over ? 'Fin de la partida'
-    : left === 0 ? 'Última carta del semestre' : `Quedan ${left} carta${left === 1 ? '' : 's'} después de esta`;
+  $('#semester-sub').textContent = g.over ? 'Game over'
+    : left === 0 ? 'Last card of the semester' : `${left} card${left === 1 ? '' : 's'} left after this one`;
 }
 
 function renderCard() {
@@ -149,7 +149,7 @@ function renderCard() {
 function renderActions() {
   const box = $('#actions');
   if (game.over) {
-    const again = el('button', 'btn btn-primary', 'Jugar de nuevo');
+    const again = el('button', 'btn btn-primary', 'Play again');
     again.addEventListener('click', () => startGame(game.expansion, game.target));
     box.replaceChildren(again);
     return;
@@ -168,9 +168,9 @@ function courseRow(sem) {
   const list = game.courses[sem];
   const frag = document.createDocumentFragment();
   const isNow = sem === game.semester && !game.over;
-  frag.append(el('h2', '', `Cursos del ${sem}° semestre${isNow ? ' (actual)' : ''}`));
+  frag.append(el('h2', '', `Semester ${sem} courses${isNow ? ' (current)' : ''}`));
   if (!list.length) {
-    frag.append(el('p', 'course-empty', 'Todavía no te inscribiste en ningún curso.'));
+    frag.append(el('p', 'course-empty', 'You have not enrolled in any course yet.'));
     return frag;
   }
   const row = el('div', 'course-row' + (isNow || game.over ? '' : ' is-past'));
@@ -185,8 +185,10 @@ function courseRow(sem) {
     const slots = c.buddy.length;
     const lbl = el('span', item.buddies >= slots && slots ? 'is-full' : '',
       slots ? `👥 ${item.buddies}/${slots}` : '👥 —');
+    img.draggable = false;
     t.append(img, lbl);
     t.addEventListener('click', () => openZoom(c));
+    attachPeek(t, () => c);
     row.append(t);
   }
   frag.append(row);
@@ -228,9 +230,9 @@ function showEnd() {
   const r = result(game);
   $('#end-dialog').classList.toggle('is-win', r.win);
   $('#end-emoji').textContent = r.win ? '🎓' : '💀';
-  $('#end-title').textContent = r.win ? '¡Te recibiste de nigromante!' : 'No te recibiste';
+  $('#end-title').textContent = r.win ? 'You have won!' : 'You have lost!';
   $('#end-msg').replaceChildren(...(r.win
-    ? [el('li', '', 'Terminaste la tesis, juntaste los créditos y conservaste la cordura.')]
+    ? [el('li', '', 'You finished your thesis, earned the credits and kept your sanity. You graduated in Necromancy!')]
     : r.problems.map((p) => el('li', '', p))));
   $('#end-stats').textContent = `🌀 ${game.sanity} · ✒️ ${game.thesis}/${MAX_THESIS} · 🎓 ${game.credits}/${game.target}`;
   if (!r.win) navigator.vibrate?.([120, 60, 220]);
@@ -251,7 +253,57 @@ function beginGame() {
   save();
 }
 
+// ================= Mantener presionada una carta: verla en grande =================
+// Mientras el dedo sigue apoyado se muestra la carta ocupando la pantalla; al soltar se cierra.
+// Un toque corto sigue abriendo los detalles de la carta.
+const PEEK_DELAY = 350; // ms
+const PEEK_SLOP = 10;   // px que se puede mover el dedo antes de considerarlo un desplazamiento
+const peekEl = $('#peek');
+let peekTimer = 0;
+let peekStart = null;
+let peekShown = false;
+let suppressClick = false;
+
+function showPeek(c) {
+  peekEl.querySelector('img').src = imgSrc(c);
+  peekEl.hidden = false;
+  peekShown = true;
+  navigator.vibrate?.(15);
+}
+
+function endPeek() {
+  clearTimeout(peekTimer);
+  peekStart = null;
+  if (!peekShown) return;
+  peekEl.hidden = true;
+  peekShown = false;
+  // El navegador puede disparar un "click" al soltar: que no abra además los detalles.
+  suppressClick = true;
+  setTimeout(() => { suppressClick = false; }, 400);
+}
+
+function attachPeek(target, getCard) {
+  target.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0) return;
+    peekStart = { x: e.clientX, y: e.clientY };
+    clearTimeout(peekTimer);
+    peekTimer = setTimeout(() => { const c = getCard(); if (c) showPeek(c); }, PEEK_DELAY);
+  });
+  target.addEventListener('pointermove', (e) => {
+    if (peekShown || !peekStart) return;
+    if (Math.hypot(e.clientX - peekStart.x, e.clientY - peekStart.y) > PEEK_SLOP) endPeek();
+  });
+  target.addEventListener('contextmenu', (e) => e.preventDefault());
+  target.addEventListener('click', (e) => {
+    if (suppressClick) { e.stopImmediatePropagation(); e.preventDefault(); }
+  }, true);
+}
+window.addEventListener('pointerup', endPeek);
+window.addEventListener('pointercancel', endPeek);
+window.addEventListener('blur', endPeek);
+
 $('#big-card').addEventListener('click', () => { const c = currentCard(game); if (c) openZoom(c); });
+attachPeek($('#big-card'), () => currentCard(game));
 $('#zoom-ok').addEventListener('click', () => closeDialog($('#zoom-dialog')));
 
 // ================= Nueva partida =================
@@ -261,8 +313,8 @@ function buildDifficulties() {
     const b = el('button', 'level');
     b.type = 'button';
     b.innerHTML = `
-      <span class="level-text"><strong>${d.label}</strong><small>${exp ? 'Con la expansión · 24 cartas' : 'Juego base · 20 cartas'}</small></span>
-      <span class="level-meta">${d.target}<small>créditos</small></span>`;
+      <span class="level-text"><strong>${d.label}</strong><small>${exp ? 'With expansion · 24 cards' : 'Base game · 20 cards'}</small></span>
+      <span class="level-meta">${d.target}<small>credits</small></span>`;
     b.addEventListener('click', () => startGame(exp, d.target));
     return b;
   }));
@@ -277,7 +329,7 @@ function refreshHome() {
   const saved = loadSaved();
   const btn = $('#continue-btn');
   btn.hidden = !saved;
-  if (saved) btn.textContent = `Continuar partida (${saved.semester}° semestre)`;
+  if (saved) btn.textContent = `Continue game (Semester ${saved.semester})`;
 }
 
 $('#play-btn').addEventListener('click', () => show('screen-setup'));
@@ -326,7 +378,7 @@ $('#open-install').addEventListener('click', () => {
 document.querySelectorAll('.install-tab').forEach((t) => t.addEventListener('click', () => setInstallTab(t.dataset.os)));
 // Copiar la dirección del juego (para pegarla en Chrome o Safari).
 document.querySelectorAll('.copy-url').forEach((b) => b.addEventListener('click', () => {
-  const done = () => { b.textContent = '¡Copiado!'; setTimeout(() => { b.textContent = 'Copiar'; }, 2000); };
+  const done = () => { b.textContent = 'Copied!'; setTimeout(() => { b.textContent = 'Copy'; }, 2000); };
   const selectText = () => { const r = document.createRange(); r.selectNodeContents(b.previousElementSibling); const s = getSelection(); s.removeAllRanges(); s.addRange(r); };
   if (navigator.clipboard?.writeText) navigator.clipboard.writeText(b.dataset.url).then(done, selectText);
   else selectText();

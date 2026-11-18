@@ -13,8 +13,8 @@ const course = (img, name, level, thesis, sanity, needLevel, needMagic, credits,
   needMagic: needMagic ? needMagic.split(',') : [], credits,
   buddy: [b1, b2].filter(Boolean), learns,
 });
-const tired = () => ({ img: 'tired', type: 'tired', name: 'Cansancio' });
-const sanityBoost = () => ({ img: 'sanity_boost', type: 'sanity', name: 'Recuperar cordura' });
+const tired = () => ({ img: 'tired', type: 'tired', name: 'Tired' });
+const sanityBoost = () => ({ img: 'sanity_boost', type: 'sanity', name: 'Sanity boost' });
 
 const BASE_CARDS = [
   course('abyssal_language',         'Abyssal language',         'C',  0, 1, '',   '',        2,  '',         '',         'B'),
@@ -55,14 +55,14 @@ const SEMESTER_SIZE = { base: 12, expansion: 14 };
 
 const DIFFICULTIES = {
   base: [
-    { key: 'easy',   label: 'Fácil',   target: 35 },
-    { key: 'medium', label: 'Normal',  target: 40 },
-    { key: 'hard',   label: 'Difícil', target: 45 },
+    { key: 'easy',   label: 'Easy',    target: 35 },
+    { key: 'medium', label: 'Medium', target: 40 },
+    { key: 'hard',   label: 'Hard',   target: 45 },
   ],
   expansion: [
-    { key: 'easy',   label: 'Fácil',   target: 45 },
-    { key: 'medium', label: 'Normal',  target: 50 },
-    { key: 'hard',   label: 'Difícil', target: 52 },
+    { key: 'easy',   label: 'Easy',    target: 45 },
+    { key: 'medium', label: 'Medium', target: 50 },
+    { key: 'hard',   label: 'Hard',   target: 52 },
   ],
 };
 

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -7,7 +7,7 @@
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Nigromancia">
+  <meta name="apple-mobile-web-app-title" content="Necromancy">
   <title>Graduate in Necromancy</title>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="assets/icon-192.png">
@@ -22,31 +22,31 @@
       <div class="home-hero">
         <img class="home-card" src="assets/cards/back.webp" alt="">
         <h1 class="title"><img src="assets/logo.webp" alt="Graduate in Necromancy"></h1>
-        <p class="tagline">Un juego de cartas solitario.<br>Sobreviví dos semestres en la facultad de nigromancia: terminá la tesis, juntá créditos y no pierdas la cordura.</p>
+        <p class="tagline">A solo card game.<br>Survive two semesters at the school of necromancy: finish your thesis, earn your credits and keep your sanity.</p>
       </div>
 
       <footer class="bottom stack">
-        <button id="continue-btn" class="btn btn-secondary" hidden>Continuar partida</button>
-        <button id="play-btn" class="btn btn-primary">Jugar</button>
-        <button id="rules-btn" class="btn btn-ghost">📜 Cómo se juega</button>
-        <p class="links"><button type="button" id="open-install" class="link-btn">📲 Cómo instalar la app</button></p>
-        <p class="credit">Juego original de Bulgur007 · <a href="https://bulgur007.itch.io/graduate-in-necromancy" target="_blank" rel="noopener">bulgur007.itch.io</a></p>
+        <button id="continue-btn" class="btn btn-secondary" hidden>Continue game</button>
+        <button id="play-btn" class="btn btn-primary">Play</button>
+        <button id="rules-btn" class="btn btn-ghost">📜 How to play</button>
+        <p class="links"><button type="button" id="open-install" class="link-btn">📲 How to install the app</button></p>
+        <p class="credit">Original game by Bulgur007 · <a href="https://bulgur007.itch.io/graduate-in-necromancy" target="_blank" rel="noopener">bulgur007.itch.io</a></p>
       </footer>
     </section>
 
     <!-- Pantalla 2: Nueva partida -->
     <section class="screen" id="screen-setup">
       <header class="top">
-        <button class="back" id="back-home" aria-label="Volver">‹</button>
-        <h1>Nueva partida</h1>
-        <p class="sub">¿Cuántos créditos necesitás para recibirte?</p>
+        <button class="back" id="back-home" aria-label="Back">‹</button>
+        <h1>New game</h1>
+        <p class="sub">How many credits do you need to graduate?</p>
       </header>
 
       <label class="switch">
         <input type="checkbox" id="expansion">
         <span class="switch-text">
-          <strong>Usar la expansión</strong>
-          <small>Suma 3 cursos W y un Cansancio. Los semestres pasan a tener 14 cartas.</small>
+          <strong>Use expansion</strong>
+          <small>Adds 3 W courses and one Tired card. Semester 1 has 14 cards.</small>
         </span>
         <span class="switch-ui" aria-hidden="true"></span>
       </label>
@@ -57,26 +57,27 @@
     <!-- Pantalla 3: Partida -->
     <section class="screen game" id="screen-game">
       <header class="top">
-        <button class="back" id="quit-game" aria-label="Salir de la partida">×</button>
+        <button class="back" id="quit-game" aria-label="Quit game">×</button>
         <h1 id="semester-title" class="game-title"></h1>
         <p id="semester-sub" class="sub"></p>
-        <button class="help" id="game-rules" aria-label="Reglas">?</button>
+        <button class="help" id="game-rules" aria-label="Rules">?</button>
       </header>
 
       <div class="stats">
-        <div class="stat" id="stat-sanity"><span class="stat-label">🌀 Cordura</span><b class="stat-val"></b><span class="bar"><i></i></span></div>
-        <div class="stat" id="stat-thesis"><span class="stat-label">✒️ Tesis</span><b class="stat-val"></b><span class="bar"><i></i></span></div>
-        <div class="stat" id="stat-credits"><span class="stat-label">🎓 Créditos</span><b class="stat-val"></b><span class="bar"><i></i></span></div>
+        <div class="stat" id="stat-sanity"><span class="stat-label">🌀 Sanity</span><b class="stat-val"></b><span class="bar"><i></i></span></div>
+        <div class="stat" id="stat-thesis"><span class="stat-label">✒️ Thesis</span><b class="stat-val"></b><span class="bar"><i></i></span></div>
+        <div class="stat" id="stat-credits"><span class="stat-label">🎓 Credits</span><b class="stat-val"></b><span class="bar"><i></i></span></div>
       </div>
       <div class="magic-row">
-        <span id="magic" class="magic" aria-label="Magia aprendida"></span>
+        <span id="magic" class="magic" aria-label="Learned magic"></span>
         <span id="piles" class="piles"></span>
       </div>
 
       <div class="stage">
-        <button type="button" class="big-card" id="big-card" aria-label="Ver la carta en grande"><img alt=""></button>
+        <button type="button" class="big-card" id="big-card" aria-label="Card details"><img alt="" draggable="false"></button>
         <p class="card-name" id="card-name"></p>
         <p class="card-info" id="card-info"></p>
+        <p class="card-hint">Tap for details · Press and hold to enlarge</p>
       </div>
 
       <p class="toast" id="toast" role="status" aria-live="polite"></p>
@@ -88,14 +89,17 @@
 
   </main>
 
-  <!-- Carta en grande -->
+  <!-- Carta en grande mientras se la mantiene presionada -->
+  <div id="peek" class="peek" hidden aria-hidden="true"><img alt=""></div>
+
+  <!-- Detalles de una carta -->
   <dialog id="zoom-dialog" class="sheet zoom" aria-labelledby="zoom-title">
     <h2 id="zoom-title"></h2>
     <div class="sheet-body">
       <img id="zoom-img" class="zoom-img" alt="">
       <ul id="zoom-info" class="zoom-info"></ul>
     </div>
-    <button type="button" id="zoom-ok" class="btn btn-primary">Cerrar</button>
+    <button type="button" id="zoom-ok" class="btn btn-primary">Close</button>
   </dialog>
 
   <!-- Fin de la partida -->
@@ -104,63 +108,64 @@
     <h2 id="end-title"></h2>
     <ul id="end-msg" class="end-msg"></ul>
     <p id="end-stats" class="end-stats"></p>
-    <button type="button" id="end-again" class="btn btn-primary">Jugar de nuevo</button>
-    <button type="button" id="end-home" class="btn btn-ghost">Volver al inicio</button>
+    <button type="button" id="end-again" class="btn btn-primary">Play again</button>
+    <button type="button" id="end-home" class="btn btn-ghost">Back to start</button>
   </dialog>
 
   <!-- Confirmar salida -->
   <dialog id="quit-dialog" class="sheet" aria-labelledby="quit-title">
-    <h2 id="quit-title">¿Salir de la partida?</h2>
-    <p class="end-msg">Vas a poder continuarla desde la pantalla de inicio.</p>
-    <button type="button" id="quit-yes" class="btn btn-primary">Salir</button>
-    <button type="button" id="quit-no" class="btn btn-ghost">Seguir jugando</button>
+    <h2 id="quit-title">Quit the game?</h2>
+    <p class="end-msg">You can continue it later from the start screen.</p>
+    <button type="button" id="quit-yes" class="btn btn-primary">Quit</button>
+    <button type="button" id="quit-no" class="btn btn-ghost">Keep playing</button>
   </dialog>
 
   <!-- Reglas -->
   <dialog id="rules-dialog" class="sheet" aria-labelledby="rules-title">
-    <h2 id="rules-title">Cómo se juega</h2>
+    <h2 id="rules-title">How to play</h2>
     <div class="sheet-body">
-      <h3>Objetivo</h3>
-      <p>Sos estudiante de nigromancia. Cuando se terminen las cartas de los dos semestres, te recibís si:</p>
+      <h3>Goal</h3>
+      <p>You are a necromancy student. When the cards of both semesters run out, you graduate if:</p>
       <ol>
-        <li>Terminaste la <b>tesis</b> (5 de 5).</li>
-        <li>Juntaste los <b>créditos</b> que pide la dificultad elegida.</li>
-        <li>Tu <b>cordura</b> no es negativa (0 o más).</li>
+        <li>Your <b>thesis</b> is finished (5 of 5).</li>
+        <li>You earned the <b>credits</b> required by the chosen difficulty.</li>
+        <li>Your <b>sanity</b> is not negative (0 or more).</li>
       </ol>
-      <h3>Preparación</h3>
-      <p>Se mezclan las cartas: 12 forman el <b>1° semestre</b> (14 con la expansión) y el resto, el mazo del <b>2° semestre</b>. Empezás con 3 de cordura.</p>
-      <h3>Cada turno</h3>
-      <p>Se da vuelta una carta y elegís qué hacer con ella:</p>
+      <h3>Setup</h3>
+      <p>The cards are shuffled: 12 form <b>Semester 1</b> (14 with the expansion) and the rest form the <b>Semester 2</b> deck. You start with 3 sanity.</p>
+      <h3>Each turn</h3>
+      <p>A card is turned and you choose what to do with it:</p>
       <ul>
-        <li><b>Inscribirte al curso</b>: pagás la cordura del recuadro de arriba (y la tesis, en los cursos W), sumás los créditos de abajo y aprendés la magia que enseña el curso. La cordura puede bajar hasta −2.</li>
-        <li><b>Dejarlo para el 2° semestre</b>: solo durante el 1° semestre. La carta va al mazo del 2° semestre, que admite hasta 12 cartas (14 con la expansión).</li>
-        <li><b>Compañero de estudio</b>: ponés la carta debajo de un curso del semestre actual que tenga lugar libre y ganás su efecto: el 1° compañero da lo que muestra la carta sola; el 2°, lo de las dos cartas.</li>
-        <li><b>Trabajar en la tesis</b>: +1 de tesis.</li>
-        <li><b>Recuperar cordura</b>: solo con las cartas de cordura (la espiral). +1, hasta 5.</li>
-        <li><b>Descartar</b> la carta.</li>
+        <li><b>Enroll yourself to the course</b>: pay the sanity shown at the top (and thesis, for W courses), earn the credits shown at the bottom and learn the magic the course teaches. Sanity can go down to −2.</li>
+        <li><b>Leave for the next semester</b>: only during Semester 1. The card goes to the Semester 2 deck, which holds up to 12 cards (14 with the expansion).</li>
+        <li><b>Raise Study Buddy</b>: place the card under a course of the current semester that has a free slot and get its effect: the 1st study buddy gives what the single card shows; the 2nd, what the two cards show.</li>
+        <li><b>Work on thesis</b>: +1 thesis.</li>
+        <li><b>Recover sanity point</b>: only with Sanity boost cards (the spiral). +1, up to 5.</li>
+        <li><b>Just discard</b> the card.</li>
       </ul>
-      <h3>Requisitos de los cursos</h3>
+      <h3>Course prerequisites</h3>
       <ul>
-        <li><b>Magia</b>: algunos cursos piden haber aprendido magia <b>▼ oscura</b> o <b>○ luz</b>. Cada magia aprendida cubre un solo requisito. Los cursos con ▼○ abajo enseñan una magia que sirve como cualquiera de las dos.</li>
-        <li><b>A1 / A2</b>: <i>Soul mending</i> pide haber cursado A1 (<i>Speaking with the dead</i>) e <i>Invoking shadowspawns</i> pide A2 (<i>History of the Void</i>).</li>
+        <li><b>Magic</b>: some courses require <b>▼ dark</b> or <b>○ light</b> magic. Each learned magic covers only one requirement. Courses showing ▼○ at the bottom teach a magic that counts as either one.</li>
+        <li><b>A1 / A2</b>: <i>Soul mending</i> requires A1 (<i>Speaking with the dead</i>) and <i>Invoking shadowspawns</i> requires A2 (<i>History of the Void</i>).</li>
       </ul>
-      <h3>Cansancio</h3>
-      <p>Las cartas de <b>Cansancio</b> no sirven para la tesis ni como compañero de estudio: solo se descartan. En la expansión, los cursos <b>W</b> aceptan únicamente Cansancio como compañero.</p>
-      <h3>Entre semestres</h3>
-      <p>Al terminar el 1° semestre recuperás 3 de cordura (hasta 5) y se mezcla el mazo del 2°. Los compañeros de estudio solo se pueden poner en cursos del semestre en curso.</p>
-      <h3>Símbolos de las cartas</h3>
-      <p>🌀 espiral: cordura · ✒️ pluma: tesis · C: créditos · ▼ magia oscura · ○ magia de luz.</p>
-      <h3>Dificultad</h3>
-      <p>Créditos para recibirte: fácil 35, normal 40, difícil 45. Con la expansión: 45, 50 y 52.</p>
-      <p>Tocá la carta para verla en grande con todos sus datos. Reglas originales en <a href="https://bulgur007.itch.io/graduate-in-necromancy" target="_blank" rel="noopener">bulgur007.itch.io</a>.</p>
+      <h3>Tired</h3>
+      <p><b>Tired</b> cards can't be used to work on your thesis or as study buddies: just discard them. In the expansion, <b>W</b> courses accept only Tired cards as study buddies.</p>
+      <h3>Between semesters</h3>
+      <p>When Semester 1 ends you recover 3 sanity (up to 5) and the Semester 2 deck is shuffled. Study buddies can only be placed under courses of the current semester.</p>
+      <h3>Card symbols</h3>
+      <p>🌀 spiral: sanity · ✒️ quill: thesis · C: credits · ▼ dark magic · ○ light magic.</p>
+      <h3>Difficulty</h3>
+      <p>Credits needed to graduate: Easy 35, Medium 40, Hard 45. With the expansion: 45, 50 and 52.</p>
+      <h3>Cards</h3>
+      <p>Press and hold any card to see it bigger. Tap it to see all its details. Full rules at <a href="https://bulgur007.itch.io/graduate-in-necromancy" target="_blank" rel="noopener">bulgur007.itch.io</a>.</p>
     </div>
-    <button type="button" id="rules-ok" class="btn btn-primary">Entendido</button>
+    <button type="button" id="rules-ok" class="btn btn-primary">Got it</button>
   </dialog>
 
   <!-- Cómo instalar -->
   <dialog id="install-dialog" class="sheet" aria-labelledby="install-title">
-    <h2 id="install-title">Instalar la app</h2>
-    <p id="install-done" class="install-note" hidden>✅ Ya estás usando la app instalada.</p>
+    <h2 id="install-title">Install the app</h2>
+    <p id="install-done" class="install-note" hidden>✅ You are already using the installed app.</p>
     <div class="install-tabs" role="tablist">
       <button type="button" role="tab" class="install-tab" data-os="android" aria-selected="true">Android</button>
       <button type="button" role="tab" class="install-tab" data-os="ios" aria-selected="false">iPhone</button>
@@ -168,25 +173,25 @@
     <div class="sheet-body">
       <div class="install-panel" data-os="android" role="tabpanel">
         <ol>
-          <li>Abrí esta página en <b>Chrome</b> (o en el navegador que uses: Samsung Internet, Edge, Firefox…):<span class="install-url"><code>https://tenehuini.github.io/granecro_mobile/</code><button type="button" class="copy-url" data-url="https://tenehuini.github.io/granecro_mobile/">Copiar</button></span></li>
-          <li>Tocá el menú del navegador: <b>⋮</b> (tres puntos) o <b>≡</b> (tres rayas), arriba o abajo a la derecha.</li>
-          <li>Elegí <b>Instalar app</b>. Si no aparece, buscá <b>Agregar a pantalla principal</b> o <b>Agregar página a → Pantalla de inicio</b>.</li>
-          <li>Confirmá con <b>Instalar</b> o <b>Agregar</b>.</li>
+          <li>Open this page in <b>Chrome</b> (or the browser you use: Samsung Internet, Edge, Firefox…):<span class="install-url"><code>https://tenehuini.github.io/granecro_mobile/</code><button type="button" class="copy-url" data-url="https://tenehuini.github.io/granecro_mobile/">Copy</button></span></li>
+          <li>Tap the browser menu: <b>⋮</b> (three dots) or <b>≡</b> (three lines), at the top or bottom right.</li>
+          <li>Choose <b>Install app</b>. If it isn't there, look for <b>Add to Home screen</b> or <b>Add page to → Home screen</b>.</li>
+          <li>Confirm with <b>Install</b> or <b>Add</b>.</li>
         </ol>
-        <p class="install-note">El ícono de la calavera con birrete queda en la pantalla de inicio, como cualquier app.</p>
+        <p class="install-note">The skull with the graduation cap icon appears on your home screen, like any other app.</p>
       </div>
       <div class="install-panel" data-os="ios" role="tabpanel" hidden>
         <ol>
-          <li>Abrí esta página en <b>Safari</b> (es lo más seguro; en otros navegadores no siempre aparece la opción):<span class="install-url"><code>https://tenehuini.github.io/granecro_mobile/</code><button type="button" class="copy-url" data-url="https://tenehuini.github.io/granecro_mobile/">Copiar</button></span></li>
-          <li>Tocá el botón <b>Compartir</b>: el cuadrado con una flecha hacia arriba ⬆️. Según la versión está en la barra de abajo, arriba, o dentro del menú <b>⋯</b>.</li>
-          <li>Deslizá hacia abajo y elegí <b>Agregar a inicio</b> (o <b>Agregar a pantalla de inicio</b>).</li>
-          <li>Tocá <b>Agregar</b>, arriba a la derecha.</li>
+          <li>Open this page in <b>Safari</b> (the safest choice; other browsers don't always offer the option):<span class="install-url"><code>https://tenehuini.github.io/granecro_mobile/</code><button type="button" class="copy-url" data-url="https://tenehuini.github.io/granecro_mobile/">Copy</button></span></li>
+          <li>Tap the <b>Share</b> button: the square with an up arrow ⬆️. Depending on the version it is in the bottom bar, at the top, or inside the <b>⋯</b> menu.</li>
+          <li>Scroll down and choose <b>Add to Home Screen</b>.</li>
+          <li>Tap <b>Add</b>, at the top right.</li>
         </ol>
-        <p class="install-note">El ícono queda en la pantalla de inicio. Funciona igual en iPad.</p>
+        <p class="install-note">The icon appears on your home screen. It works the same on iPad.</p>
       </div>
-      <p class="install-note">Una vez abierta con internet, la app funciona sin conexión.</p>
+      <p class="install-note">Once opened with an internet connection, the app works offline.</p>
     </div>
-    <button type="button" id="install-ok" class="btn btn-primary">Entendido</button>
+    <button type="button" id="install-ok" class="btn btn-primary">Got it</button>
   </dialog>
 
   <script src="cards.js"></script>

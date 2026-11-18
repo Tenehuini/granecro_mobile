@@ -239,3 +239,20 @@ a { color: var(--lima); }
 .copy-url { flex: none; border: 0; border-radius: 8px; padding: 8px 10px; font: inherit; font-size: .85rem; font-weight: 700; background: var(--surface-2); color: var(--text); cursor: pointer; }
 .install-note { margin: 10px 0 0; color: var(--muted); font-size: .9rem; text-align: center; }
 .sheet :focus:not(:focus-visible), .sheet-body:focus { outline: none; }
+
+/* ---------- Mantener presionada una carta ---------- */
+.big-card, .thumb { -webkit-touch-callout: none; -webkit-user-select: none; user-select: none; }
+.big-card img, .thumb img { -webkit-user-drag: none; pointer-events: none; }
+.card-hint { margin: 2px 0 0; font-size: .72rem; color: var(--muted); opacity: .75; text-align: center; }
+.peek {
+  position: fixed; inset: 0; z-index: 1000; display: grid; place-items: center;
+  padding: calc(12px + env(safe-area-inset-top)) 12px calc(12px + env(safe-area-inset-bottom));
+  background: rgba(0, 0, 0, .85); pointer-events: none;
+  animation: peek-in .15s ease-out;
+}
+.peek img {
+  width: min(96vw, calc((100dvh - 24px) * 750 / 1051), 600px); aspect-ratio: 750 / 1051;
+  border-radius: 16px; box-shadow: 0 10px 40px rgba(0, 0, 0, .9), 0 0 30px rgba(95, 224, 168, .25);
+}
+@keyframes peek-in { from { opacity: 0; transform: scale(.9); } }
+@media (prefers-reduced-motion: reduce) { .peek { animation: none; } }

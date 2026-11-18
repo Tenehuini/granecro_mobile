@@ -4,7 +4,7 @@ Versión web instalable (PWA) de **Graduate in Necromancy**, el juego de cartas 
 Bulgur007 ([itch.io](https://bulgur007.itch.io/graduate-in-necromancy) ·
 [BoardGameGeek](https://boardgamegeek.com/boardgame/422125/graduate-in-necromancy)). Es la misma lógica
 que `granecro/` (Streamlit), rehecha en HTML/CSS/JS para jugar con el celular en vertical.
-Sin publicidad y funciona sin internet.
+El juego está completamente en inglés, su idioma original. Sin publicidad y funciona sin internet.
 
 **Abrir el juego:** https://tenehuini.github.io/granecro_mobile/
 
@@ -35,12 +35,12 @@ Se publica con GitHub Pages desde la rama `main` (carpeta raíz) del repositorio
 2. Tocá **Compartir** (el cuadrado con la flecha hacia arriba).
 3. Elegí **Agregar a inicio** y tocá **Agregar**.
 
-La pantalla de inicio del juego tiene el botón **📲 Cómo instalar la app** con estos mismos pasos.
+La pantalla de inicio del juego tiene el botón **📲 How to install the app** con estos mismos pasos.
 
 ## Cómo se juega
 
-Ver el botón **📜 Cómo se juega** en la app. Durante la partida, tocá la carta para verla en grande
-con todos sus datos en castellano.
+Ver el botón **📜 How to play** en la app. Durante la partida, **mantené presionada** cualquier carta
+(la actual o las de tus cursos) para verla en grande y leer su texto; un toque corto muestra sus datos.
 
 ## Estructura
 
@@ -53,7 +53,7 @@ granecro_mobile/
 ├── app.js          # Pantallas, dibujo y guardado
 ├── sw.js           # Cache para jugar sin conexión
 ├── manifest.json   # Datos para instalarla como app
-└── assets/         # Cartas (WebP reducidas desde granecro/img), logo e íconos
+└── assets/         # Cartas (WebP desde granecro/img, a resolución original), logo e íconos
 ```
 
 ## Diferencias con la versión de Streamlit

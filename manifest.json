@@ -1,8 +1,8 @@
 {
   "name": "Graduate in Necromancy",
-  "short_name": "Nigromancia",
-  "description": "Juego de cartas solitario: recibite de nigromante sin perder la cordura.",
-  "lang": "es",
+  "short_name": "Necromancy",
+  "description": "Solo card game: graduate in necromancy without losing your sanity.",
+  "lang": "en",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
@@ -10,7 +10,15 @@
   "background_color": "#0d1210",
   "theme_color": "#0d1210",
   "icons": [
-    { "src": "assets/icon-192.png", "sizes": "192x192", "type": "image/png" },
-    { "src": "assets/icon-512.png", "sizes": "512x512", "type": "image/png" }
+    {
+      "src": "assets/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
   ]
 }

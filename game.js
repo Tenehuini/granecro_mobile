@@ -3,11 +3,13 @@
 // ================= Lógica del juego (sin DOM) =================
 // Reglas iguales a granecro/granecro.py. Las cartas de la partida se identifican por su
 // índice en deckCards(expansion). Los mazos son arrays: se roba del final (pop).
+// Todos los textos que ve el jugador están en inglés (idioma original del juego).
 
-const MAGIC_WORD = { B: 'oscura', W: 'luz', 'B/W': 'oscura o luz' };
+const MAGIC_WORD = { B: 'dark', W: 'light', 'B/W': 'dark or light' };
 const MAGIC_ICON = { B: '▼', W: '○', 'B/W': '▼○' };
 const LEVEL_COURSE = { A1: 'Speaking with the dead', A2: 'History of the Void' };
-const EFFECT_WORD = { '@': ['cordura', 'cordura'], T: ['tesis', 'tesis'], C: ['crédito', 'créditos'] };
+const EFFECT_WORD = { '@': ['sanity', 'sanity'], T: ['thesis', 'thesis'], C: ['credit', 'credits'] };
+const ORDINAL = ['1st', '2nd', '3rd'];
 
 function shuffle(arr) {
   for (let i = arr.length - 1; i > 0; i--) {
@@ -73,12 +75,12 @@ function magicOk(needs, learned) {
 // Motivos por los que no te podés inscribir (vacío = podés).
 function enrollProblems(g, c) {
   const out = [];
-  if (g.sanity - c.sanity < MIN_SANITY) out.push(`Te falta cordura: quedarías en ${g.sanity - c.sanity} y el mínimo es ${MIN_SANITY}.`);
-  if (c.thesis > 0 && g.thesis < c.thesis) out.push(`Cuesta ${c.thesis} de tesis y tenés ${g.thesis}.`);
-  if (c.needLevel && !g.levels.includes(c.needLevel)) out.push(`Antes tenés que cursar ${c.needLevel} (${LEVEL_COURSE[c.needLevel]}).`);
+  if (g.sanity - c.sanity < MIN_SANITY) out.push(`Not enough sanity: you would drop to ${g.sanity - c.sanity} and the minimum is ${MIN_SANITY}.`);
+  if (c.thesis > 0 && g.thesis < c.thesis) out.push(`It costs ${c.thesis} thesis and you have ${g.thesis}.`);
+  if (c.needLevel && !g.levels.includes(c.needLevel)) out.push(`You must take ${c.needLevel} (${LEVEL_COURSE[c.needLevel]}) first.`);
   if (!magicOk(c.needMagic, g.magic)) {
-    const have = g.magic.length ? g.magic.map((m) => MAGIC_WORD[m]).join(', ') : 'nada todavía';
-    out.push(`Pide magia ${c.needMagic.map((m) => MAGIC_WORD[m]).join(', ')}. Aprendiste: ${have}.`);
+    const have = g.magic.length ? g.magic.map((m) => MAGIC_WORD[m]).join(', ') : 'nothing so far';
+    out.push(`Requires ${c.needMagic.map((m) => MAGIC_WORD[m]).join(', ')} magic. You learned: ${have}.`);
   }
   return out;
 }
@@ -92,38 +94,38 @@ function getActions(g) {
   const acts = [];
 
   if (c.type === 'sanity') {
-    acts.push({ id: 'sanity', title: 'Recuperar cordura', detail: '+1 cordura',
-      disabled: g.sanity >= MAX_SANITY ? 'Tu cordura ya está al máximo.' : '' });
+    acts.push({ id: 'sanity', title: 'Recover sanity point', detail: '+1 sanity',
+      disabled: g.sanity >= MAX_SANITY ? 'Your sanity is already at maximum.' : '' });
   }
 
   if (c.type === 'course') {
     const probs = enrollProblems(g, c);
-    const parts = [`−${c.sanity} cordura`];
-    if (c.thesis) parts.push(`−${c.thesis} tesis`);
-    parts.push(`+${c.credits} créditos`);
-    if (c.learns) parts.push(`aprendés magia ${MAGIC_WORD[c.learns]}`);
-    acts.push({ id: 'enroll', title: 'Inscribirte al curso', detail: parts.join(' · '), disabled: probs.join(' ') });
+    const parts = [`−${c.sanity} sanity`];
+    if (c.thesis) parts.push(`−${c.thesis} thesis`);
+    parts.push(`+${c.credits} credits`);
+    if (c.learns) parts.push(`learn ${MAGIC_WORD[c.learns]} magic`);
+    acts.push({ id: 'enroll', title: 'Enroll yourself to the course', detail: parts.join(' · '), disabled: probs.join(' ') });
 
     if (g.semester === 1) {
-      acts.push({ id: 'leave', title: 'Dejarlo para el 2° semestre', detail: `Va al mazo del 2° semestre (${g.s2.length}/${semesterSize(g)})`,
-        disabled: g.s2.length >= semesterSize(g) ? 'El mazo del 2° semestre está lleno.' : '' });
+      acts.push({ id: 'leave', title: 'Leave for the next semester', detail: `Goes to the Semester 2 deck (${g.s2.length}/${semesterSize(g)})`,
+        disabled: g.s2.length >= semesterSize(g) ? 'The Semester 2 deck is full.' : '' });
     }
   }
 
-  // Compañero de estudio: los cursos W (expansión) solo aceptan Cansancio, y el resto no lo acepta.
+  // Compañero de estudio: los cursos W (expansión) solo aceptan Tired, y el resto no lo acepta.
   for (const course of g.courses[g.semester]) {
     const cc = cardOf(g, course.id);
     if (course.buddies >= buddySlots(cc)) continue;
     if ((cc.level === 'W') !== (c.type === 'tired')) continue;
-    acts.push({ id: 'buddy:' + course.id, title: `Compañero de estudio en «${cc.name}»`,
-      detail: `${course.buddies + 1}° compañero: ${describeEffect(cc.buddy[course.buddies])}`, disabled: '' });
+    acts.push({ id: 'buddy:' + course.id, title: `Raise Study Buddy for «${cc.name}»`,
+      detail: `${ORDINAL[course.buddies]} study buddy: ${describeEffect(cc.buddy[course.buddies])}`, disabled: '' });
   }
 
   if (c.type !== 'tired' && g.thesis < MAX_THESIS) {
-    acts.push({ id: 'thesis', title: 'Trabajar en la tesis', detail: '+1 tesis', disabled: '' });
+    acts.push({ id: 'thesis', title: 'Work on thesis', detail: '+1 thesis', disabled: '' });
   }
 
-  acts.push({ id: 'discard', title: 'Descartar', detail: 'La carta no se usa', disabled: '' });
+  acts.push({ id: 'discard', title: 'Just discard', detail: 'The card is not used', disabled: '' });
   return acts;
 }
 
@@ -149,10 +151,10 @@ function act(g, id) {
     g.credits += c.credits;
     g.levels.push(c.level);
     if (c.learns) g.magic.push(c.learns);
-    msg = `Te inscribiste en «${c.name}»: ${a.detail}.`;
+    msg = `You enrolled in «${c.name}»: ${a.detail}.`;
   } else if (id === 'leave') {
     g.s2.push(g.current);
-    msg = `«${c.name}» queda para el 2° semestre.`;
+    msg = `«${c.name}» is left for the next semester.`;
   } else if (id.startsWith('buddy:')) {
     const courseId = Number(id.slice(6));
     const course = g.courses[g.semester].find((x) => x.id === courseId);
@@ -160,22 +162,22 @@ function act(g, id) {
     const eff = cc.buddy[course.buddies];
     course.buddies++;
     applyEffect(g, eff);
-    msg = `Nuevo compañero de estudio en «${cc.name}»: ${describeEffect(eff)}.`;
+    msg = `New study buddy for «${cc.name}»: ${describeEffect(eff)}.`;
   } else if (id === 'thesis') {
     g.thesis++;
-    msg = 'Avanzaste con la tesis: +1.';
+    msg = 'You worked on your thesis: +1.';
   } else if (id === 'sanity') {
     g.sanity++;
-    msg = 'Recuperaste 1 de cordura.';
+    msg = 'You recovered 1 sanity point.';
   } else if (id === 'discard') {
-    msg = 'Descartaste la carta.';
+    msg = 'You discarded the card.';
   }
 
   if (!g.s1.length && g.semester === 1) {
     g.semester = 2;
     g.sanity = Math.min(MAX_SANITY, g.sanity + SEMESTER_BREAK_SANITY);
     shuffle(g.s2);
-    msg += ` Terminó el 1° semestre: +${SEMESTER_BREAK_SANITY} de cordura y empieza el 2°.`;
+    msg += ` Semester 1 is over: +${SEMESTER_BREAK_SANITY} sanity. Semester 2 begins.`;
   }
   draw(g);
   return msg;
@@ -183,9 +185,9 @@ function act(g, id) {
 
 function result(g) {
   const problems = [];
-  if (g.credits < g.target) problems.push(`Te faltaron créditos: juntaste ${g.credits} de ${g.target}.`);
-  if (g.thesis < MAX_THESIS) problems.push(`La tesis quedó sin terminar (${g.thesis} de ${MAX_THESIS}).`);
-  if (g.sanity < 0) problems.push(`Perdiste la cordura (${g.sanity}).`);
+  if (g.credits < g.target) problems.push(`Insufficient credits: you got ${g.credits} and you need ${g.target}.`);
+  if (g.thesis < MAX_THESIS) problems.push(`Your thesis is not finished (${g.thesis} of ${MAX_THESIS}).`);
+  if (g.sanity < 0) problems.push(`You are insane (sanity ${g.sanity}).`);
   return { win: problems.length === 0, problems };
 }
 
