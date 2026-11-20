@@ -151,7 +151,7 @@ function act(g, id) {
     g.credits += c.credits;
     g.levels.push(c.level);
     if (c.learns) g.magic.push(c.learns);
-    msg = `You enrolled in «${c.name}»: ${a.detail}.`;
+    msg = `You enrolled in "${c.name}"`;
   } else if (id === 'leave') {
     g.s2.push(g.current);
     msg = `«${c.name}» is left for the next semester.`;

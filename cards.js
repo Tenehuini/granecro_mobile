@@ -55,14 +55,14 @@ const SEMESTER_SIZE = { base: 12, expansion: 14 };
 
 const DIFFICULTIES = {
   base: [
-    { key: 'easy',   label: 'Easy',    target: 35 },
-    { key: 'medium', label: 'Medium', target: 40 },
+    { key: 'easy',   label: 'Easy',    target: 30 },
+    { key: 'medium', label: 'Medium', target: 35 },
     { key: 'hard',   label: 'Hard',   target: 45 },
   ],
   expansion: [
-    { key: 'easy',   label: 'Easy',    target: 45 },
-    { key: 'medium', label: 'Medium', target: 50 },
-    { key: 'hard',   label: 'Hard',   target: 52 },
+    { key: 'easy',   label: 'Easy',    target: 30 },
+    { key: 'medium', label: 'Medium', target: 35 },
+    { key: 'hard',   label: 'Hard',   target: 45 },
   ],
 };
 

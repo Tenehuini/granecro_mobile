@@ -1,6 +1,6 @@
 // Cache offline: el juego funciona sin conexión una vez abierto.
 // Al publicar cambios, subir el número de CACHE para que los celulares bajen los archivos nuevos.
-const CACHE = 'granecro-v3';
+const CACHE = 'granecro-v4';
 const FILES = [
   './', 'index.html', 'styles.css', 'cards.js', 'game.js', 'app.js', 'manifest.json',
   'assets/logo.webp', 'assets/icon-192.png', 'assets/icon-512.png',
